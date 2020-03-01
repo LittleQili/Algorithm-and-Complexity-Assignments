@@ -1,0 +1,105 @@
+\documentclass[12pt,a4paper,UTF8]{article}
+\usepackage{ctex}
+\usepackage{amsmath,amscd,amsbsy,amssymb,latexsym,url,bm,amsthm}
+\usepackage{epsfig,graphicx,subfigure}
+\usepackage{enumitem,balance}
+\usepackage{wrapfig}
+\usepackage{mathrsfs,euscript}
+\usepackage[usenames]{xcolor}
+\usepackage{hyperref}
+\usepackage[vlined,ruled,linesnumbered]{algorithm2e}
+\hypersetup{colorlinks=true,linkcolor=black}
+
+\newtheorem{theorem}{Theorem}%定理
+\newtheorem{lemma}[theorem]{Lemma}%引理
+\newtheorem{proposition}[theorem]{Proposition}%命题
+\newtheorem{corollary}[theorem]{Corollary}%推论
+\newtheorem{exercise}{Exercise}
+\newtheorem*{solution}{Solution}
+\newtheorem{definition}{Definition}
+\theoremstyle{definition}
+
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+
+\newcommand{\postscript}[2]
+ {\setlength{\epsfxsize}{#2\hsize}
+  \centerline{\epsfbox{#1}}}
+
+\renewcommand{\baselinestretch}{1.0}
+
+\setlength{\oddsidemargin}{-0.365in}
+\setlength{\evensidemargin}{-0.365in}
+\setlength{\topmargin}{-0.3in}
+\setlength{\headheight}{0in}
+\setlength{\headsep}{0in}
+\setlength{\textheight}{10.1in}
+\setlength{\textwidth}{7in}
+\makeatletter \renewenvironment{proof}[1][Proof] {\par\pushQED{\qed}\normalfont\topsep6\p@\@plus6\p@\relax\trivlist\item[\hskip\labelsep\bfseries#1\@addpunct{.}]\ignorespaces}{\popQED\endtrivlist\@endpefalse} \makeatother
+\makeatletter
+\renewenvironment{solution}[1][Solution] {\par\pushQED{\qed}\normalfont\topsep6\p@\@plus6\p@\relax\trivlist\item[\hskip\labelsep\bfseries#1\@addpunct{.}]\ignorespaces}{\popQED\endtrivlist\@endpefalse} \makeatother
+
+\begin{document}
+\noindent
+
+%========================================================================
+\noindent\framebox[\linewidth]{\shortstack[c]{
+\Large{\textbf{Lab00-Proof}}\vspace{1mm}\\
+CS214-Algorithm and Complexity, Xiaofeng Gao, Spring 2020.}}
+\begin{center}
+\footnotesize{\color{red}$*$ If there is any problem, please contact TA Yiming Liu.}
+
+% Please write down your name, student id and email.
+\footnotesize{\color{blue}$*$ Name: Yijia Diao(刁义嘉)  \quad Student ID: 518030910146 \quad Email: diao\_yijia@sjtu.edu.cn}
+\end{center}
+
+\begin{enumerate}
+    \item
+    Prove that for any integer $n>2$, there is a prime $p$ satisfying $n<p<n!$. {\color{blue}(Hint: consider a prime factor $p$ of $n!-1$ and prove by contradiction)}
+    \begin{lemma} \label{lemma1}
+    	$ {\forall} n \in \mathbb{N} $ with  $ n \geq 2 $ ,it has prime factorizations.
+    \end{lemma}
+    \begin{proof}
+    	Since $ n > 2 $, therefore $ n! \geq 2n \geq n + 1 $, thus $ n! - 1 > n $.\\
+    	According to Lemma \ref{lemma1}, the number $ n! - 1 $ must have a factor $ p $ that is a prime. Suppose that $ p \leq n $, then $ p $ is a factor of $ n! $. However, since $ p > 1 $, $ p $ cannot be a factor of both $ n! $ and $ n! - 1 $.\\
+    	Therefore, the assumption that $ p \leq n $ leads to a contradiction, and we may conclude that $n<p<n!$.
+    \end{proof}
+
+    \item
+    Use the minimal counterexample principle to prove that for any integer $n>17$, there exist integers $i_n\ge 0$ and $j_n\ge 0$, such that $n = i_n \times 4 + j_n \times 7$.
+    \begin{proof}
+        We call the proposition in the problem $ P(n) $, in which $ n > 17 $. Since $ 18 = 1 \times 4 + 2 \times 7 $, $ 19 = 3 \times 4 + 1 \times 7 $, $ 20 = 5 \times 4 + 0 \times 7 $, $ 21 = 0 \times 4 + 3 \times 7 $, $ 22 = 2 \times 4 + 2 \times 7 $, $ 23 = 4 \times 4 + 1 \times 7 $, $ 24 = 6 \times 4 + 0 \times 7 $, $ 25 = 1 \times 4 + 3 \times 7 $, $ 26 = 3 \times 4 + 2 \times 7 $, $ 27 = 5 \times 4 + 1 \times 7 $, $ 28 = 0 \times 4 + 4 \times 7 $, $ P(n) $ is true for starting values of $ n $.\\
+        Suppose that it is not true that $ P(n) $ is true for every $ n > 17 $, therefore there must be a smallest such value, say $ n = k, k > 28 $, so $ k-11>17 $. According to the assumption, $ P(k - 11) $ must be true, this means that there exist integers $i_{k - 11} \ge 0$ and $j_{k-11} \ge 0$, such that $k-11 = i_{k - 11} \times 4 + j_{k - 11} \times 7$.\\
+        However, $$ k = i_{k - 11} \times 4 + j_{k - 11} \times 7 + 11 = i_{k - 11} \times 4 + 4 + j_{k - 11} \times 7 + 7 = (i_{k - 11} + 1) \times 4 + (j_{k - 11} + 1) \times 7 $$ in which $ i_k = i_{k-11} + 1 \geq 0, j_k = j_{k-11} + 1 \geq 0 $. That means $ P(k) $ is true. The assumption that it is not true that $ P(n) $ is true for every $ n > 17 $ leads to a contradiction, and we may conclude for every $ n > 17 $, $ P(n) $ is true.
+    \end{proof}
+
+    \item
+    Let $P=\{p_1, p_2, \cdots\}$ the set of all primes. Suppose that $\{p_i\}$ is monotonically    increasing, i.e., $p_1=2$, $p_2=3$, $p_3=5$, $\cdots$. Please prove: $p_n<2^{2^n}$. {\color{blue}(Hint: $p_i \nmid (1+\prod_{j=1}^n p_j), i=1,2,\cdots,n$.)}
+    \begin{proof}
+        We call the proposition in the problem $ P(n) $, in which $ n \geq 1 $.\\
+        $ P(1) $ is true, since $ p_1 = 2 < 2^{2^1} = 4 $.\\
+        Suppose that for  $ k \geq 1 $ and $ {\forall}i: 1 \leq i \leq k $, $ P(i) $ is true, now prove $ P(k+1) $ is true.\\
+        Since for $ {\forall} k \geq 1 $, $ p_k>1 $, therefore $p_j \nmid (1+\prod_{i=1}^k p_i), j=1,2,\cdots,n $. According to Lemma \ref{lemma1}, $ (1+\prod_{i=1}^k p_i) $ is a prime that is larger than $ p_k $, that means $ p_{k+1} \leq (1+\prod_{i=1}^k p_i) $. Since
+        $$ p_{k+1} \leq (1+\prod_{i=1}^k p_i) < (1+\prod_{i=1}^k 2^{2^i}) < (1+2^{\sum_{i=1}^k 2^i}) = (1+2^{2^{k+1}-2}) $$
+        and $ k \geq 1 $, therefore 
+        $$ p_{k+1} < 2^{2^{k+1}} $$
+        which means $ P(k+1) $ is true.
+        So we may conclude that $ P(n) $ is true.
+    \end{proof}
+
+    \item
+    Prove that a plane divided by $n$ lines can be colored with only $2$ colors, and the adjacent regions have different colors.
+    \begin{proof}
+        We call the proposition in the problem $ P(n) $, in which $ n \geq 1 $.\\
+        $ P(1) $ is true, since it only divides the plane into $ 2 $ regions.\\
+        Suppose that for $ k \geq 1 $ and $ {\forall}i: 1 \leq i \leq k $, $ P(i) $ is true, now prove $ P(k+1) $ is true.\\
+        Regard the $ (k+1)th $ line as add one line to the colored plane, then divide the plane into two different planes. According to the assumption, each new plane is now colored with only $ 2 $ colors, and the adjacent regions have different colors. Choose one plane and reverse the colors in all regions, it still satisfies the condition in the problem. Then combine the two planes together, two sides of the $ (k+1)th $ line satisfy the condition, and the adjacent regions alongside the $ (k+1)th $ line are colored with different colors, since one line can only divide one region into two adjacent regions. Thus $ P(k+1) $ is true. So we may conclude that $ P(n) $ is true.
+    \end{proof}
+
+\end{enumerate}
+
+\vspace{20pt}
+
+\textbf{Remark:} You need to include your .pdf and .tex files in your uploaded .rar or .zip file.
+
+%========================================================================
+\end{document}
