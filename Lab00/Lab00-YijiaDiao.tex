@@ -79,7 +79,7 @@ CS214-Algorithm and Complexity, Xiaofeng Gao, Spring 2020.}}
         $ P(1) $ is true, since $ p_1 = 2 < 2^{2^1} = 4 $.\\
         Suppose that for  $ k \geq 1 $ and $ {\forall}i: 1 \leq i \leq k $, $ P(i) $ is true, now prove $ P(k+1) $ is true.\\
         Since for $ {\forall} k \geq 1 $, $ p_k>1 $, therefore $p_j \nmid (1+\prod_{i=1}^k p_i), j=1,2,\cdots,n $. According to Lemma \ref{lemma1}, $ (1+\prod_{i=1}^k p_i) $ is a prime that is larger than $ p_k $, that means $ p_{k+1} \leq (1+\prod_{i=1}^k p_i) $. Since
-        $$ p_{k+1} \leq (1+\prod_{i=1}^k p_i) < (1+\prod_{i=1}^k 2^{2^i}) < (1+2^{\sum_{i=1}^k 2^i}) = (1+2^{2^{k+1}-2}) $$
+        $$ p_{k+1} \leq (1+\prod_{i=1}^k p_i) < (1+\prod_{i=1}^k 2^{2^i}) = (1+2^{\sum_{i=1}^k 2^i}) = (1+2^{2^{k+1}-2}) $$
         and $ k \geq 1 $, therefore 
         $$ p_{k+1} < 2^{2^{k+1}} $$
         which means $ P(k+1) $ is true.
