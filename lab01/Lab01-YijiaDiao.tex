@@ -88,7 +88,7 @@ CS214-Algorithm and Complexity, Xiaofeng Gao, Spring 2020.}}
     \begin{minipage}[t]{0.8\textwidth}
     \begin{algorithm}[H]
       \KwIn{An array $A[1,\cdots,n]$}
-      \KwOut{$A[1,\cdots,n]$ sorted nonincreasingly}
+      \KwOut{$A[1,\cdots,n]$ sorted nondecreasingly}
 
       \BlankLine
       \caption{QuickSort}\label{Alg_Quick}
@@ -114,7 +114,7 @@ CS214-Algorithm and Complexity, Xiaofeng Gao, Spring 2020.}}
     \begin{solution}
         Suppose the average time complexity of QuickSort is $T(n)$, when the size of array is $n$. Between line 1 and line 5, since line 3 is executed in every cycle, the time complexity of this part $\approx n - 1$. Then we have
         \begin{align*}
-         T(n) = &\Pr(i = 1)(n-1 + T(i-1)) + \Pr(i = n)(n-1 + T(n - i))\\ &+ \sum_{k = 2}^{n-1} \Pr(i=k)(n-1+T(i-1)+T(n - i))
+        T(n) = &\Pr(i = 1)(n-1 + T(i-1)) + \Pr(i = n)(n-1 + T(n - i))\\ &+ \sum_{k = 2}^{n-1} \Pr(i=k)(n-1+T(i-1)+T(n - i))
         \end{align*}
         Since $i$ is uniformly distributed between $1$ and $n$, $\Pr(i) = \frac{1}{n} $, then we have
         \begin{align}\label{recur1}
@@ -148,7 +148,7 @@ CS214-Algorithm and Complexity, Xiaofeng Gao, Spring 2020.}}
     \begin{minipage}[t]{0.8\textwidth}
     \begin{algorithm}[H]
         \KwIn{An array $A[1,\dots,n]$}
-        \KwOut{$A[1,\dots,n]$ sorted nonincreasingly}
+        \KwOut{$A[1,\dots,n]$ sorted nondecreasingly}
 
         \BlankLine
         \caption{BubbleSort}\label{Alg_Bubble}
@@ -168,24 +168,67 @@ CS214-Algorithm and Complexity, Xiaofeng Gao, Spring 2020.}}
     \end{algorithm}
     \end{minipage}
 
-%    \begin{solution}
-%        Uncomment this block to write your proof.
-%    \end{solution}
+    \begin{solution}
+        Suppose that when $ i = k $, there are no swaps during an iteration, $k \leq n-1$; the average time complexity of Alg.~\ref{Alg_Bubble} is $T(n)$. Since k is uniformly distributed between 1 and n-1, $ \Pr(k) = \frac{1}{n-1} $. Since
+        \begin{align*}
+        T(n) \leq \sum_{k=1}^{n-1} \Pr(k)( \sum_{i=1}^{k}\sum_{j=n}^{i+1}3 )
+        \end{align*}
+        and
+        \begin{align*}
+        \sum_{k=1}^{n-1} \Pr(k)( \sum_{i=1}^{k}\sum_{j=n}^{i+1}3 ) = \frac{3}{n-1}\sum_{k=1}^{n-1}(nk - \frac{k(k+1)}{2}) = n(2n-1)
+        \end{align*}
+        , we have
+        \begin{align*}
+        T(n) \leq n(2n-1) = O(n^2)
+        \end{align*}
+        Then we can conclude that the \textbf{average} time complexity of Alg.~\ref{Alg_Bubble} is $O(n^2)$.
+        
+        The best case is that the array is already sorted nondecreasingly. So the execution time is
+        \begin{align*}
+        \sum_{j = n}^{2} 1 = n - 1 = \Omega(n)
+        \end{align*}
+        Then we can conclude that the \textbf{best} time complexity of Alg.~\ref{Alg_Bubble} is $\Omega(n)$.
+    \end{solution}
 
     \item
 
-    Rank the following functions by order of growth with brief explanations: that is, find an arrangement $g_1, g_2, \ldots , g_{15}$ of the functions $g_1 = \Omega(g_2), g_2 = \Omega(g_3), \ldots, g_{14} = \Omega(g_{15})$.  Partition your list into equivalence classes such that functions $f(n)$ and $g(n)$ are in the same class if and only if $f(n) = \Theta(g(n))$. Use symbols ``$=$'' and ``$\prec$'' to order these functions appropriately.
+    Rank the following functions by order of growth with brief explanations: that is, find an arrangement $g_1, g_2, \ldots , g_{15}$ of the functions $g_1 = \Omega(g_2), g_2 = \Omega(g_3), \ldots, g_{14} = \Omega(g_{15})$.  Partition your list into equivalence classes such that functions $f(n)$ and $g(n)$ are in the same class if and only if $f(n) = \Theta(g(n))$. Use symbols ``$=$'' and ``$\prec$'' to order these functions appropriately. Here $\log n$ stands for $\log_2 n$.
     $$
     \begin{array}{ccccc}
-        2^{\lg n} \quad & \quad (\lg n)^{\lg n} \quad & \quad n^2 \quad & \quad n! \quad & \quad (n + 1)! \\
-        2^n \quad & \quad n^3 \quad & \quad \lg^2 n \quad & \quad e^n \quad & \quad 2^{2^n} \\
-        \lg\lg n \quad & \quad n\cdot 2^n \quad & \quad n \quad & \quad \lg n \quad & \quad 4^{\lg n} \\
+        2^{\log n} \quad & \quad (\log n)^{\log n} \quad & \quad n^2 \quad & \quad n! \quad & \quad (n + 1)! \\
+        2^n \quad & \quad n^3 \quad & \quad \log^2 n \quad & \quad e^n \quad & \quad 2^{2^n} \\
+        \log\log n \quad & \quad n\cdot 2^n \quad & \quad n \quad & \quad \log n \quad & \quad 4^{\log n} \\
     \end{array}
     $$
 
-%    \begin{solution}
-%        Uncomment this block to write your proof.
-%    \end{solution}
+    \begin{solution}
+		\begin{align*}
+		&\log\log n \prec \log n \prec \log^2 n \prec 2^{\log n} = n \prec 4^{\log n} = n^2 \prec n^3\\
+		&\prec (\log n)^{\log n} \prec 2^n \prec n\cdot 2^n \prec e^n \prec n! \prec (n+1)! \prec 2^{2^{n}}
+		\end{align*}
+		Now prove some of the relations above.
+		
+		\textcircled{1} $ n^3 \prec (\log n)^{\log n} $.
+		\begin{align*}
+		\lim\limits_{n \to \infty} \frac{n^3}{(\log n)^{\log n}} \overset{k = \log n}{=} \lim\limits_{k \to \infty} \frac{8^k}{k^k} = 0
+		\end{align*}
+		\textcircled{2} $ (\log n)^{\log n} \prec 2^n $. Since
+		$$\lim\limits_{k \to \infty} \frac{k \log k}{2^k} = 0$$
+		we have
+		\begin{align*}
+			\lim\limits_{n \to \infty} \frac{(\log n)^{\log n}}{2^n} \overset{k = \log n}{=} \lim\limits_{k \to \infty} \frac{k^k}{2^{2^k}} = \lim\limits_{k \to \infty} \frac{2^{k \log k}}{2^{2^k}} = 0
+		\end{align*}
+		\textcircled{3} $ e^n \prec n! $
+		\begin{align*}
+			0 \leq \lim\limits_{n \to \infty} \frac{e^n}{n!} = \lim\limits_{n \to \infty} \frac{e\cdot e\cdot e\cdot ... \cdot e}{1\cdot 2\cdot 3 \cdot ... \cdot n } \leq \frac{e^2}{2}\lim\limits_{n \to \infty}\frac{e}{n} = 0
+		\end{align*}
+		\textcircled{4} $ (n+1)! \prec 2^{2^{n}} $. Since
+		$$0\leq \lim\limits_{n \to \infty} \frac{\sum_{i = 1}^{n+1} \log i}{2^n} \leq 2\lim\limits_{n \to \infty} \frac{(n+1)\log(n+1)}{2^{n+1}} = 0$$
+		we have
+		\begin{align*}
+			\lim\limits_{n \to \infty} \frac{(n+1)!}{2^{2^{n}}} = \lim\limits_{n \to \infty} \frac{2^{\sum_{i = 1}^{n+1} \log i}}{2^{2^{n}}} = 0
+		\end{align*}
+	\end{solution}
 
 \end{enumerate}
 
