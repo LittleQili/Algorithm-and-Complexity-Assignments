@@ -112,7 +112,7 @@ CS214-Algorithm and Complexity, Xiaofeng Gao, Spring 2020.}}
     \end{minipage}
 
     \begin{solution}
-        Suppose the average time complexity of QuickSort is $T(n)$, when the size of array is $n$. Between line 1 and line 5, since line 3 is executed in every cycle, the time complexity of this part $\approx n - 1$. Then we have
+        Suppose the average time complexity of Alg.~\ref{Alg_Quick} is $T(n)$, when the size of array is $n$. Between line 1 and line 5, since line 3 is executed in every cycle, the time complexity of this part $\approx n - 1$. Then we have
         \begin{align*}
         T(n) = &\Pr(i = 1)(n-1 + T(i-1)) + \Pr(i = n)(n-1 + T(n - i))\\ &+ \sum_{k = 2}^{n-1} \Pr(i=k)(n-1+T(i-1)+T(n - i))
         \end{align*}
@@ -139,7 +139,7 @@ CS214-Algorithm and Complexity, Xiaofeng Gao, Spring 2020.}}
         \end{align}
         According to equation \ref{recur4}, we can conclude that 
         $$ T(n) = O(n\log n)$$
-        which means that the average time complexity of QuickSort is $ O(n\log n) $.
+        which means that the average time complexity of Alg.~\ref{Alg_Quick} is $ O(n\log n) $.
     \end{solution}
 
     \item
@@ -207,27 +207,32 @@ CS214-Algorithm and Complexity, Xiaofeng Gao, Spring 2020.}}
 		&\prec (\log n)^{\log n} \prec 2^n \prec n\cdot 2^n \prec e^n \prec n! \prec (n+1)! \prec 2^{2^{n}}
 		\end{align*}
 		Now prove some of the relations above.
-		
-		\textcircled{1} $ n^3 \prec (\log n)^{\log n} $.
-		\begin{align*}
-		\lim\limits_{n \to \infty} \frac{n^3}{(\log n)^{\log n}} \overset{k = \log n}{=} \lim\limits_{k \to \infty} \frac{8^k}{k^k} = 0
-		\end{align*}
-		\textcircled{2} $ (\log n)^{\log n} \prec 2^n $. Since
-		$$\lim\limits_{k \to \infty} \frac{k \log k}{2^k} = 0$$
-		we have
-		\begin{align*}
+		\begin{enumerate}
+			\item
+			$ n^3 \prec (\log n)^{\log n} $.
+			\begin{align*}
+			\lim\limits_{n \to \infty} \frac{n^3}{(\log n)^{\log n}} \overset{k = \log n}{=} \lim\limits_{k \to \infty} \frac{8^k}{k^k} = 0
+			\end{align*}
+			\item
+			$ (\log n)^{\log n} \prec 2^n $. Since
+			$$\lim\limits_{k \to \infty} \frac{k \log k}{2^k} = 0$$
+			we have
+			\begin{align*}
 			\lim\limits_{n \to \infty} \frac{(\log n)^{\log n}}{2^n} \overset{k = \log n}{=} \lim\limits_{k \to \infty} \frac{k^k}{2^{2^k}} = \lim\limits_{k \to \infty} \frac{2^{k \log k}}{2^{2^k}} = 0
-		\end{align*}
-		\textcircled{3} $ e^n \prec n! $
-		\begin{align*}
+			\end{align*}
+			\item
+			$ e^n \prec n! $
+			\begin{align*}
 			0 \leq \lim\limits_{n \to \infty} \frac{e^n}{n!} = \lim\limits_{n \to \infty} \frac{e\cdot e\cdot e\cdot ... \cdot e}{1\cdot 2\cdot 3 \cdot ... \cdot n } \leq \frac{e^2}{2}\lim\limits_{n \to \infty}\frac{e}{n} = 0
-		\end{align*}
-		\textcircled{4} $ (n+1)! \prec 2^{2^{n}} $. Since
-		$$0\leq \lim\limits_{n \to \infty} \frac{\sum_{i = 1}^{n+1} \log i}{2^n} \leq 2\lim\limits_{n \to \infty} \frac{(n+1)\log(n+1)}{2^{n+1}} = 0$$
-		we have
-		\begin{align*}
+			\end{align*}
+			\item
+			$ (n+1)! \prec 2^{2^{n}} $. Since
+			$$0\leq \lim\limits_{n \to \infty} \frac{\sum_{i = 1}^{n+1} \log i}{2^n} \leq 2\lim\limits_{n \to \infty} \frac{(n+1)\log(n+1)}{2^{n+1}} = 0$$
+			we have
+			\begin{align*}
 			\lim\limits_{n \to \infty} \frac{(n+1)!}{2^{2^{n}}} = \lim\limits_{n \to \infty} \frac{2^{\sum_{i = 1}^{n+1} \log i}}{2^{2^{n}}} = 0
-		\end{align*}
+			\end{align*}
+		\end{enumerate}
 	\end{solution}
 
 \end{enumerate}
