@@ -7,7 +7,7 @@ elif sys.version_info.major == 3:
 
 
 class MyCanvas(Canvas):
-    def __init__(self, master, hLineWidth=1, vLineWidth=1, radius=2, **kwargs):
+    def __init__(self, master, hLineWidth=1, vLineWidth=1, radius=1, **kwargs):
         Canvas.__init__(self, master, kwargs)
         self.hLineWidth = hLineWidth
         self.vLineWidth = vLineWidth
@@ -69,7 +69,7 @@ class Sorter_oe:
 
 
 if __name__ == '__main__':
-    k = int(input('please input the number k: '))
+    k = int(input('please input the number k: ')) + 1
     n = 2 ** k
     sortingNetwork = Sorter_oe(n)
 
@@ -78,7 +78,7 @@ if __name__ == '__main__':
     hScale, vScale = (winW - 2 * hMargin) // sortingNetwork.hNum(), (winH - 2 * vMargin) // (n - 1)
 
     root = Tk()
-    root.title('Sorting Network with n=%d (Drawn by Python Tkinter)' % n)
+    root.title('Sorting Network with n=%d (2n-input, Drawn by Python Tkinter)' % (n // 2))
     cvs = MyCanvas(root, bg='white', width=winW, height=winH)
     sortingNetwork.draw(cvs, hMargin, vMargin, hScale, vScale)
     for i in range(n):
