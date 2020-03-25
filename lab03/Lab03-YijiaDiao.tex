@@ -1,0 +1,213 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{ctex}
+\usepackage{amsmath,amscd,amsbsy,amssymb,latexsym,url,bm,amsthm}
+\usepackage{epsfig,graphicx,subfigure}
+\usepackage{enumitem,balance}
+\usepackage{wrapfig}
+\usepackage{mathrsfs,euscript}
+\usepackage[usenames]{xcolor}
+\usepackage{hyperref}
+\usepackage[vlined,ruled,linesnumbered]{algorithm2e}
+\hypersetup{colorlinks=true,linkcolor=black}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{exercise}{Exercise}
+\newtheorem*{solution}{Solution}
+\newtheorem{definition}{Definition}
+\theoremstyle{definition}
+
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+
+\newcommand{\postscript}[2]
+ {\setlength{\epsfxsize}{#2\hsize}
+  \centerline{\epsfbox{#1}}}
+
+\renewcommand{\baselinestretch}{1.0}
+
+\setlength{\oddsidemargin}{-0.365in}
+\setlength{\evensidemargin}{-0.365in}
+\setlength{\topmargin}{-0.3in}
+\setlength{\headheight}{0in}
+\setlength{\headsep}{0in}
+\setlength{\textheight}{10.1in}
+\setlength{\textwidth}{7in}
+\makeatletter \renewenvironment{proof}[1][Proof] {\par\pushQED{\qed}\normalfont\topsep6\p@\@plus6\p@\relax\trivlist\item[\hskip\labelsep\bfseries#1\@addpunct{.}]\ignorespaces}{\popQED\endtrivlist\@endpefalse} \makeatother
+\makeatletter
+\renewenvironment{solution}[1][Solution] {\par\pushQED{\qed}\normalfont\topsep6\p@\@plus6\p@\relax\trivlist\item[\hskip\labelsep\bfseries#1\@addpunct{.}]\ignorespaces}{\popQED\endtrivlist\@endpefalse} \makeatother
+
+
+\begin{document}
+\noindent
+
+%========================================================================
+\noindent\framebox[\linewidth]{\shortstack[c]{
+\Large{\textbf{Lab03-GreedyStrategy}}\vspace{1mm}\\
+CS214-Algorithm and Complexity, Xiaofeng Gao, Spring 2020.}}
+\begin{center}
+\footnotesize{\color{red}$*$ If there is any problem, please contact TA Shuodian Yu.}
+
+% Please write down your name, student id and email.
+\footnotesize{\color{blue}$*$ Name:Yijia Diao  \quad Student ID:518030910146 \quad Email: diao\_yijia@sjtu.edu.cn}
+\end{center}
+
+\begin{enumerate}
+    \item
+    There are $n+1$ people, each with two attributes $(a_i,b_i), i\in[0,n] \text{ and } a_i>1$. The $i$-th person can get money worth $c_i = \frac{\prod_{j=0}^{i-1}{a_j}}{b_i}$. We do not want anyone to get too much. Thus, please design a strategy to sort people from $1$ to $n$, such that the maximum earned money $c_{max}=\max\limits_{1\leq i\leq n} c_i$ is minimized. (Note: the 0-th person doesn't enroll in the sorting process, but $a_0$ always works for each $c_i$.)
+    \begin{enumerate}
+        \item Please design an algorithm based on greedy strategy to solve the above problem. (Write a pseudocode)
+        \item Prove your algorithm is optimal.
+    \end{enumerate}
+
+    \begin{solution}\hspace*{\fill}
+        \begin{enumerate}
+        	\item
+        	\begin{minipage}[t]{0.85\textwidth}
+        		\begin{algorithm}[H]
+        			%\algsetup{footnotesize}
+        			%\scriptsize
+        			\KwIn{$(a_i,b_i), i\in[0,n]$.}
+        			\KwOut{$P[0,\cdots,n]$ = people's sequence that the maximum earned money $c_{max}=\max\limits_{1\leq i\leq n} \frac{\prod_{j=0}^{i-1}{a_j}}{b_i}$ is minimized.}
+        			\BlankLine
+        			\caption{Min-Max Earn Money}
+        			\label{Alg-MinmaxEarn}
+        			
+        			\lIf{$n = 0$}{
+        				\Return{$ P[0] $}
+        			}
+        		
+        			$cmp[1,\cdots,n] \leftarrow 0$\;
+        			
+        			$P[0,\cdots,n] \leftarrow [0,1,2,\cdots,n]$\;
+        			
+        			\For{$i = 1$ \textbf{to} $n$}{
+        				$cmp[i] \leftarrow a_i\times b_i$\;
+        			}
+        			
+        			Sort $P[1,\cdots,n]$ by $ cmp[1,\cdots,n] $ non-decreasingly\;
+        			
+        			\Return{$P[0,\cdots,n]$}\;
+        			
+        		\end{algorithm}
+        	\end{minipage}
+        \item
+       	\textbf{Proof.}(by Contradiction)\\
+       	Suppose that the output of Alg.\ref{Alg-MinmaxEarn} is not optimal. Thus, we suppose that the optimal solution is $OP[0,\cdots,n]$.
+       	\begin{definition}
+       		 $ S[i] $  and  $ S[i+1] $ is an \textbf{inverse pair} iff $ i \geq 1 $ and $ cmp_{S[i]} > cmp_{S[i+1]} $. 
+       	\end{definition}
+        Since the output of Alg.\ref{Alg-MinmaxEarn} don't have inverse pair, there must be inverse pairs in $OP[1,\cdots,$ $n]$, suppose they are $ OP[i]$ and $ OP[i+1] $, $\prod_{k = 0}^{i-1} a_{k} = s$. So the maximum value of $c_{OP[i]} $ and $ c_{OP[i+1]} $ is
+        $$ max_{op} = \max \{\frac{s}{b_i}, \frac{s\times a_{i}}{b_{i+1}}\}$$
+        if we exchange $ OP[i]$ and $ OP[i+1] $,other person's money won't change. So the maximum earned money of the two is
+        $$ max_{iop} = \max \{\frac{s}{b_{i+1}}, \frac{s\times a_{i+1}}{b_{i}}\} $$
+        Since $ \forall i \geq 1 $, $ a_i \geq 1 $, so
+        \begin{align}\label{1.1}
+        	\frac{s}{b_{i+1}} \leq \frac{s\times a_{i}}{b_{i+1}}\text{ and } \frac{s}{b_i} \leq  \frac{s\times a_{i+1}}{b_{i}} 
+        \end{align}
+        Since $ cmp_{OP[i]} > cmp_{OP[i+1]} $, which means $ a_{i}b_{i} > a_{i+1}b_{i+1} $, we have
+        \begin{align}\label{1.2}
+        	\frac{s\times a_{i}}{b_{i+1}} > \frac{s\times a_{i+1}}{b_{i}} 
+        \end{align}
+        from inEqu.\ref{1.1} and inEqu.\ref{1.2}, we have
+        \begin{align}
+        	max_{op} > max_{iop}
+        \end{align}
+        which means that after exchanging the inverse pair of the optimal solution, the maximal earned money would decrease. So $OP[0,\cdots,n]$ is not optimal solution. Contradiction.
+        So we can conclude that Alg.\ref{Alg-MinmaxEarn} is the optimal solution.
+        \end{enumerate}
+    \end{solution}
+
+    \item
+    \textbf{Interval Scheduling} is a classic problem solved by greedy algorithm and we have introduced it in the lecture: given $n$ jobs and the $j$-th job starts at $s_j$ and finishes at $f_j$. Two jobs are compatible if they do not overlap. The goal is to find maximum subset of mutually compatible jobs. Tim wants to solve it by sort the jobs in descending order of $s_j$. Is this attempt correct? Prove the correctness of such idea, or else provide a counter-example.
+    
+    
+    \begin{proof}
+        Now prove that the attempt is correct, by contradiction.\\
+        Suppose that Tim's solution is not optimal. Then we suppose that $ i_1, i_2,\cdots, i_k (k \leq n)$ is the job selected by Tim's solution; the optimal solution is $j_1, j_2,\cdots,j_{k'}(k' > k)$ with $ i_1 = j_1, i_2 = j_2,\cdots,i_r = j_r(r < k)$.\\
+        Since $i_{r+1} \neq j_{r+1}$, and according to Tim's solution, $ s_{i_{r+1}} > s_{j_{r+1}} $. If there are some other job(s) in $ s_{j_{r+1}} $ and $ s_{i_{r+1}} $, they are in Tim's solution, but they cannot in the optimal solution. So $ k'\leq k $, contradiction.\\
+        So we can conclude that Tim's solution is optimal.
+    \end{proof}
+
+    \item
+    There are $n$ lectures numbered from $1$ to $n$. Lecture $i$ has duration (course length) $t_i$ and will close on $d_i$-th day. That is, you could take lecture $i$ \textbf{continuously} for $t_i$ days and must finish before or on the $d_i$-th day. The goal is to find the maximal number of courses that can be taken. (Note: you will start learning at the $1$-st day.)
+    
+    Please design an algorithm based on greedy strategy to solve it. You could use the data structrue learned on Data Structrue course. You need to write pseudo code and prove its correctness.
+
+    \begin{solution}
+        The algorithm is below:\\
+        \begin{minipage}[t]{0.90\textwidth}
+        	\begin{algorithm}[H]
+        		\KwIn{$(t_i,b_i), i\in[1,n]$.}
+        		\KwOut{$count$ = the maximal number of courses that can be taken.}
+        		\BlankLine
+        		\caption{Maximal Number of Courses}
+        		\label{Alg-MaxCourses}
+        		
+        		$C[1,\cdots,n] \leftarrow [1,2,\cdots,n]$\;
+        		
+        		Sort $C[1,\cdots,n]$ by $ (d_i - t_i),i\in[1,n]$ non-increasingly\;
+        		
+        		\eIf{$ d_{C[1]} - t_{C[1]} > 0 $}{
+        			$ ltime \leftarrow (d_{C[1]} - t_{C[1]})$\;
+        			$ count\leftarrow1$\;
+        		}{return 0\;}
+        		
+        		
+        		\If{$ n > 2 $}{
+        			\For{$i = 2$ \textbf{to} $n - 1$}{
+        				\If{$ltime - t_{C[i]} \geq d_{C[i+1]} - t_{C[i+1]} > 0 $}{
+        					$ count\leftarrow count+1$\;
+        					$ ltime \leftarrow ltime - t_{C[i]}$\;
+        				}
+        			}
+        		}
+        		
+        		\If{$n > 1$ and $ltime - t_{C[n]} > 0$}{
+        			$count\leftarrow count+1$\;
+        		}
+        	
+        		\Return{$count$}\;
+        	\end{algorithm}
+        \end{minipage}
+    
+    	\textbf{Proof.}(by Contradiction)\\
+    	Assume that Alg.\ref{Alg-MaxCourses} is not optimal.\\
+    	Then we suppose that the course's sequence(ordered by start time non-increasingly)of Alg.\ref{Alg-MaxCourses} is $ i_1,\cdots,i_k(k\leq n) $, the optimal solution's is $ j_1,\cdots,j_{k'}(k'>k)$; and we have $ i_1 = j_1,\cdots,i_r = j_r(r < k)$.\\
+    	According to Alg.\ref{Alg-MaxCourses}, we arrange the latest start course before the already arranged. So we have $ begintime_{i_{r+1}} > begintime_{j_{r+1}} $. Since there may be courses that could be arranged between time $ begintime_{j_{r+1}} $ and $ begintime_{i_{r+1}} $, so $ k \geq k'$, contradiction.\\
+    	We can conclude that Alg.\ref{Alg-MaxCourses} is optimal.
+    \end{solution}
+
+    \item
+    Let $S_1,S_2,\dots,S_n$ be a partition of $S$ and $k_1,k_2,\dots,k_n$ be positive integers. Let $\mathcal{I}=\{I: I \subseteq S,|I \cap S_i| \leq k_i \text { for all } 1 \leq i \leq n\}$. Prove that $\mathcal{M}=(S,\mathcal{I})$ is a matroid.
+
+    \begin{proof}\hspace*{\fill}
+        \begin{enumerate}
+        	\item[(1)] \textbf{hereditary}:
+        	
+        	Since $ \forall B \in \mathcal{I} \Leftrightarrow \forall I: I \subseteq S$ and $ |I \cap S_i| \leq k_i \text { for all } 1 \leq i \leq n\ $,
+        	 and $ \forall J \subseteq I: |J \cap S_i| \leq |I \cap S_i| $, we have:
+        	$$ \forall J \subseteq I:  J\subseteq S \text{and}  |J \cap S_i| \leq k_i \text { for all } 1 \leq i \leq n\ $$
+        	which is equivalent to $ \forall A ,\forall B: A \subset B, B \in \mathcal{I} \Rightarrow A\in\mathcal{I} $
+        	\item[(2)] \textbf{Exchange property}:
+        	
+        	Assume $ \forall A\in \mathcal{I},\forall B\in \mathcal{I} $ and $ |A| < |B| $, for all $ 1\leq i \leq n $, we discuss by cases below:
+        	\begin{enumerate}
+        		\item $ (B\backslash A)\subseteq S_i $:\\ we have $ |(B\backslash A) \cap S_{i}| = |S_{i}| \leq k_{i} $. So $ \exists x\in B\backslash A,|(A\cup \{x\})\cap S_i|\leq|S_i| \leq k_i.$
+        		\item $ (B\backslash A)\not\subset S_i $:\\
+        		$ \exists x_{0} \in (B\backslash A)\backslash S_i : x_{0} \in B\backslash A, \text{ and }|(A\cup \{x_{0}\})\cap S_i| = |A \cap S_i|+ |{x_{0}} \cup S_i| = |A \cap S_i| \leq k_i$
+        	\end{enumerate} 
+        	So we have $\exists x\in B\backslash A, |(A\cup \{x\})\cap S_i|\leq|S_i| \leq k_i $. Since$ A\in S$ and $ B\in S \Rightarrow A\cup \{x\}\in S$, we have $ A\cup \{x\}\in \mathcal{I}$. 
+        \end{enumerate}
+    So we can conclude that $\mathcal{M}=(S,\mathcal{I})$ is a matroid.
+    \end{proof}
+
+\end{enumerate}
+
+\vspace{20pt}
+
+\textbf{Remark:} You need to include your .pdf and .tex files in your uploaded .rar or .zip file.
+
+%========================================================================
+\end{document}
