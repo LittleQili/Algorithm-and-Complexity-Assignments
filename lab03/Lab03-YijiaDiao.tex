@@ -66,8 +66,6 @@ CS214-Algorithm and Complexity, Xiaofeng Gao, Spring 2020.}}
         	\item
         	\begin{minipage}[t]{0.85\textwidth}
         		\begin{algorithm}[H]
-        			%\algsetup{footnotesize}
-        			%\scriptsize
         			\KwIn{$(a_i,b_i), i\in[0,n]$.}
         			\KwOut{$P[0,\cdots,n]$ = people's sequence that the maximum earned money $c_{max}=\max\limits_{1\leq i\leq n} \frac{\prod_{j=0}^{i-1}{a_j}}{b_i}$ is minimized.}
         			\BlankLine
@@ -110,10 +108,7 @@ CS214-Algorithm and Complexity, Xiaofeng Gao, Spring 2020.}}
         \begin{align}\label{1.2}
         	\frac{s\times a_{i}}{b_{i+1}} > \frac{s\times a_{i+1}}{b_{i}} 
         \end{align}
-        from inEqu.\ref{1.1} and inEqu.\ref{1.2}, we have
-        \begin{align}
-        	max_{op} > max_{iop}
-        \end{align}
+        from inEqu.\ref{1.1} and inEqu.\ref{1.2}, we have $ max_{op} > max_{iop} $,
         which means that after exchanging the inverse pair of the optimal solution, the maximal earned money would decrease. So $OP[0,\cdots,n]$ is not optimal solution. Contradiction.
         So we can conclude that Alg.\ref{Alg-MinmaxEarn} is the optimal solution.
         \end{enumerate}
@@ -149,11 +144,9 @@ CS214-Algorithm and Complexity, Xiaofeng Gao, Spring 2020.}}
         		
         		Sort $C[1,\cdots,n]$ by $ (d_i - t_i),i\in[1,n]$ non-increasingly\;
         		
-        		\eIf{$ d_{C[1]} - t_{C[1]} > 0 $}{
-        			$ ltime \leftarrow (d_{C[1]} - t_{C[1]})$\;
-        			$ count\leftarrow1$\;
-        		}{return 0\;}
-        		
+        		$ ltime \leftarrow (d_{C[1]} - t_{C[1]})$\;
+        		\lIf{$ ltime \leq 0 $}{\Return{$ 0 $}}
+        		$ count\leftarrow1$\;
         		
         		\If{$ n > 2 $}{
         			\For{$i = 2$ \textbf{to} $n - 1$}{
@@ -164,8 +157,8 @@ CS214-Algorithm and Complexity, Xiaofeng Gao, Spring 2020.}}
         			}
         		}
         		
-        		\If{$n > 1$ and $ltime - t_{C[n]} > 0$}{
-        			$count\leftarrow count+1$\;
+        		\lIf{$n > 1$ and $ltime - t_{C[n]} > 0$}{
+        			$count\leftarrow count+1$
         		}
         	
         		\Return{$count$}\;
