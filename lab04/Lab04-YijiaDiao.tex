@@ -72,7 +72,7 @@ CS214-Algorithm and Complexity, Xiaofeng Gao, Spring 2020.}}
 			\textbf{Proof}. (Hereditary): $ \forall B\in\mathbf{C},\forall A\subseteq B $, the out-degree of $A \leq $ that of $ B $. So $ \forall V\in A:$ out-degree $\leq f(u) $, which means $ A\in\mathbf{C} $.
 			
 			(Exchange Property): Consider two independent graph $ A $ and $ B $ with $ |A|<|B| $. Now proof by Contradiction.\\
-			Suppose that $ \forall E\in B\backslash A\text{, } A\cup\{E\} $ is not an independent graph. Therefore, $ \forall E\in B $ must be connected with those $ V\in A: \text{out-degree of } V = f(u) $, and are out-edge of $ V $. Let $ k $ be the number of $ V $ above, so $ |A|\geq kf(n) $, $ |B|\leq kf(n) $ $ \Rightarrow |A|\geq|B| $, contradiction.\\
+			Suppose that $ \forall e\in B\backslash A\text{, } A\cup\{e\} $ is not an independent graph. Therefore, $ \forall e\in B $ must be connected with those $ v\in A: \text{out-degree of } v = f(u) $, and are out-edge of $ v $. Let $ k $ be the number of $ v $ above, so $ |A|\geq kf(n) $, $ |B|\leq kf(n) $ $ \Rightarrow |A|\geq|B| $, contradiction.\\
 			So we can conclude that  $ (G,\mathbf{C}) $ is matroid.
 			\item
 			\begin{minipage}[t]{0.89\textwidth}
@@ -159,7 +159,8 @@ CS214-Algorithm and Complexity, Xiaofeng Gao, Spring 2020.}}
 			$$
 			The result of Alg.\ref{Alg-2} is $ \mathcal{F'}=\{(1,1,1),(2,2,2)\} $ and the weight is 10, but one of the optimal solution is $ \mathcal{F}=\{(1,2,1),(2,1,2)\} $, weight$ = 16 $.
 			\item
-			\textbf{Proof}. Suppose $ D_x\in D $: $ \forall x_i,x_j\in X (i\neq j)$: $ x_i\neq x_j  $; \quad$ D_y\in D $: $ \forall y_i,y_j\in X (i\neq j)$: $ y_i\neq y_j$; \quad $ D_z\in D $: $ \forall z_i,z_j\in X (i\neq j)$: $ z_i\neq z_j$. \\ 
+			\textbf{Proof}. Define $ X'\subseteq X$: $ \forall x_i,x_j\in X' (i\neq j) x_i\neq x_j  $; $ Y'\subseteq Y $: $ \forall y_i,y_j\in Y (i\neq j)$: $ y_i\neq y_j$; $ Z' \subseteq Z $: $ \forall z_i,z_j\in Z (i\neq j)$: $ z_i\neq z_j$.\\
+			Then define $ D_x= X'\times Y\times Z$, $ D_y= X\times Y'\times Z$, $ D_z= X\times Y\times Z'$. \\ 
 			Define $ \mathcal{C}_1,\mathcal{C}_2 $ and $ \mathcal{C}_3 $ are the collection of $ D_x,D_y $ and $ D_z $ ; and define $ \mathcal{C} $ is the collection of independent subset of $ D $. So we have: $ \mathcal{C}=\bigcap_{i=1}^{3} \mathcal{C}_{i} $.\\
 			Now proof $ (D,\mathcal{C}_1),(D,\mathcal{C}_2) $ and $ (D,\mathcal{C}_3) $ are matroids. Since $ \mathcal{C}_1,\mathcal{C}_2 $ and $ \mathcal{C}_3 $ are equivalent, we only consider $ \mathcal{C}_1 $.\\
 			\textbf{Hereditary}: $ \forall B\subseteq D_x, \forall A \subset B$, since $ \forall x_i,x_j\in B(i\neq j): x_i\neq x_j $, we have the same property for $ A $. So $ A\in\mathcal{C}_x $.\\
@@ -216,10 +217,10 @@ CS214-Algorithm and Complexity, Xiaofeng Gao, Spring 2020.}}
 					
 					\For{$ i=1 $ to $ n $}{
 						\For{$ b=n $ to $ c_i+1 $}{
-							\lFor{all $ c $}{$ OPT[i,b,c] \leftarrow OPT[i-1,b,c] $}
+							\lFor{$ c=n $ to 1}{$ OPT[i,b,c] \leftarrow OPT[i-1,b,c] $}
 						}
 						\For{$ b=c_i $ to $ 0 $}{
-							\For{all $ c\geq 1$}{
+							\For{$ c=n $ to 1}{
 								$ minc\leftarrow\min \{c-1,c_i\} $\;
 								$ OPT[i,b,c]\leftarrow \max\{v_i+OPT[i-1,b+1,minc],OPT[i-1,b,c]\} $
 							}
