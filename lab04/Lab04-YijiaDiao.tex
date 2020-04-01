@@ -1,0 +1,245 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{ctex}
+\usepackage{amsmath,amscd,amsbsy,amssymb,latexsym,url,bm,amsthm}
+\usepackage{epsfig,graphicx,subfigure}
+\usepackage{enumitem,balance}
+\usepackage{wrapfig}
+\usepackage{mathrsfs,euscript}
+\usepackage[usenames]{xcolor}
+\usepackage{hyperref}
+\usepackage[vlined,ruled,linesnumbered]{algorithm2e}
+\hypersetup{colorlinks=true,linkcolor=black}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{exercise}{Exercise}
+\newtheorem*{solution}{Solution}
+\newtheorem{definition}{Definition}
+\theoremstyle{definition}
+
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+
+\newcommand{\postscript}[2]
+ {\setlength{\epsfxsize}{#2\hsize}
+  \centerline{\epsfbox{#1}}}
+
+\renewcommand{\baselinestretch}{1.0}
+
+\setlength{\oddsidemargin}{-0.365in}
+\setlength{\evensidemargin}{-0.365in}
+\setlength{\topmargin}{-0.3in}
+\setlength{\headheight}{0in}
+\setlength{\headsep}{0in}
+\setlength{\textheight}{10.1in}
+\setlength{\textwidth}{7in}
+\makeatletter \renewenvironment{proof}[1][Proof] {\par\pushQED{\qed}\normalfont\topsep6\p@\@plus6\p@\relax\trivlist\item[\hskip\labelsep\bfseries#1\@addpunct{.}]\ignorespaces}{\popQED\endtrivlist\@endpefalse} \makeatother
+\makeatletter
+\renewenvironment{solution}[1][Solution] {\par\pushQED{\qed}\normalfont\topsep6\p@\@plus6\p@\relax\trivlist\item[\hskip\labelsep\bfseries#1\@addpunct{.}]\ignorespaces}{\popQED\endtrivlist\@endpefalse} \makeatother
+
+\begin{document}
+
+\noindent
+
+%========================================================================
+\noindent\framebox[\linewidth]{\shortstack[c]{
+\Large{\textbf{Lab04-Matroid}}\vspace{1mm}\\
+CS214-Algorithm and Complexity, Xiaofeng Gao, Spring 2020.}}
+\begin{center}
+\footnotesize{\color{red}$*$ If there is any problem, please contact TA Yiming Liu.}
+
+% Please write down your name, student id and email.
+\footnotesize{\color{blue}$*$ Name:Yijia Diao \quad Student ID:518030910146 \quad Email: diao\_yijia@sjtu.edu.cn}
+\end{center}
+
+\begin{enumerate}
+\item Give a directed graph $G=(V,E)$ whose edges have integer weights. Let $w(e)$ be the weight of edge $e\in E$. We are also given a constraint $f(u)\geq 0$ on the out-degree of each node $u\in V$. Our goal is to find a subset of edges with maximal weight, whose out-degree at any node is no greater than the constraint.
+	\begin{enumerate}
+	    \item Please define independent sets and prove that they form a matroid.
+	    \item Write an optimal greedy algorithm based on Greedy-MAX in the form of \emph{pseudo code}.
+	    \item Analyze the time complexity of your algorithm.
+	\end{enumerate}
+
+	\begin{solution}
+		\begin{enumerate}
+			\item
+			\begin{definition}[Independent Sub-graph]
+				$ G' $ is a sub-graph of $ G $. $ G' $ is independent if $ \forall V'\in G':$ out-degree$\leq f(u) $.
+			\end{definition}
+			Let $ \mathbf{C} $ be the set of all independent sub-graph of $ G $. Now proof $ (G,\mathbf{C}) $ is matroid.
+			
+			\textbf{Proof}. (Hereditary): $ \forall B\in\mathbf{C},\forall A\subseteq B $, the out-degree of $A \leq $ that of $ B $. So $ \forall V\in A:$ out-degree $\leq f(u) $, which means $ A\in\mathbf{C} $.
+			
+			(Exchange Property): Consider two independent graph $ A $ and $ B $ with $ |A|<|B| $. Now proof by Contradiction.\\
+			Suppose that $ \forall E\in B\backslash A\text{, } A\cup\{E\} $ is not an independent graph. Therefore, $ \forall E\in B $ must be connected with those $ V\in A: \text{out-degree of } V = f(u) $, and are out-edge of $ V $. Let $ k $ be the number of $ V $ above, so $ |A|\geq kf(n) $, $ |B|\leq kf(n) $ $ \Rightarrow |A|\geq|B| $, contradiction.\\
+			So we can conclude that  $ (G,\mathbf{C}) $ is matroid.
+			\item
+			\begin{minipage}[t]{0.89\textwidth}
+				\begin{algorithm}[H]
+					\KwIn{$G=(V,E),w(e),f(u)$.}
+					\KwOut{A subset of edges $ E' $ with maximal weight, whose out-degree at any node $ \leq f(u) $.}
+					\BlankLine
+					\caption{Greedy-MAX for Maximal Weight of Edge}
+					\label{Alg-1}
+					
+					Sort all $ e \in E$ by $ w(e) $ non-decreasingly\;
+					
+					$ E' \leftarrow \emptyset ,sumweight\leftarrow0$\;
+					
+					\For{all $ e \in E$}{
+						$ G' = (V',E'\cup\{e\}) $\;
+						\If{$\forall u \in V' : u \leq f(u)$}{
+							$ E'\leftarrow E'\cup\{e\} ,sumweight\leftarrow sumweight+w(e)$\;
+						}
+					}
+			
+					\Return{$E'$}\;
+					
+				\end{algorithm}
+			\end{minipage}
+			\item Suppose we use two adjacent vertex to denote an edge, and $ |E|=n $. The time complexity of sorting is $ O(n\log n) $. For line \textbf{5}, we can use Red-Black tree to optimize, so its time complexity is $ O(\log n) $; thus the time complexity of the \textbf{For} loop is $ O(n\log n) $.\\
+			So we can conclude that the time complexity of Alg.\ref{Alg-1} is $ O(n\log n) $.
+		\end{enumerate}
+	\end{solution}
+
+
+\item Let $X$, $Y$, $Z$ be three sets. We say two triples $\left(x_{1}, y_{1}, z_{1}\right)$ and $\left(x_{2}, y_{2}, z_{2}\right)$ in $X \times Y \times Z$ are \textit{disjoint} if $x_{1} \neq x_{2}$, $y_{1} \neq y_{2},$ and $z_{1} \neq z_{2}$. Consider the following problem:
+    
+    \begin{definition}[MAX-3DM] 
+        Given three disjoint sets $X$, $Y$, $Z$ and a nonnegative weight function $c(\cdot)$ on all triples in $X \times Y \times Z$, \textbf{Maximum 3-Dimensional Matching} (MAX-3DM) is to find a collection $\mathcal{F}$ of disjoint triples with maximum total weight.
+    \end{definition}
+
+    \begin{enumerate}
+    	\item Let $D = X \times Y \times Z$. Define independent sets for MAX-3DM.
+    	\item Write a greedy algorithm based on Greedy-MAX in the form of \emph{pseudo code}. \label{Item-Greedy}
+    	\item Give a counterexample to show that your Greedy-MAX algorithm in Q.~\ref{Item-Greedy} is not optimal.
+    	\item Show that: $\max\limits_{F \subseteq D} \frac{v(F)}{u(F)} \leq 3$. {\color{blue}(Hint: you may need Theorem~\ref{Thm-Intersect} for this subquestion.)} 
+    \end{enumerate}
+    \begin{theorem} \label{Thm-Intersect}
+        Suppose an independent system $(E, \mathcal{I})$ is the intersection of $k$ matroids $\left(E, \mathcal{I}_{i}\right)$, $1 \leq i \leq k$; that is, $\mathcal{I}=\bigcap_{i=1}^{k} \mathcal{I}_{i}$. Then $\max\limits_{F \subseteq E} \frac{v(F)}{u(F)} \leq k$, where $v(F)$ is the maximum size of independent subset in $F$ and $u(F)$ is the minimum size of maximal independent subset in $F$.
+    \end{theorem}
+ 
+	\begin{solution}
+		\begin{enumerate}
+			\item 
+			\begin{definition}[Independent Triple Collection]
+				A set $ S $ is independent iff. $ S\subseteq D $ and $ \forall(x_i,y_i,z_i),(x_j,y_j,z_j)\in S$ are disjoint $  (i\neq j) $.
+			\end{definition}
+			\item
+			\begin{minipage}[t]{0.89\textwidth}
+				\begin{algorithm}[H]
+					\KwIn{$D, c(\cdot)$.}
+					\KwOut{A collection $\mathcal{F'}$ of disjoint triples.}
+					\BlankLine
+					\caption{Greedy-MAX for MAX-3DM}
+					\label{Alg-2}
+					
+					Sort all $ (x,y,z) \in D$ by $ c((x,y,z)) $ non-decreasingly\;
+					
+					$ \mathcal{F'} \leftarrow \emptyset ,sumweight\leftarrow0$\;
+					
+					\For{all $ (x,y,z) \in D$}{
+						\If{$\mathcal{F'}\cup\{(x,y,z)\}$ is an independent set}{
+							$ \mathcal{F'}\leftarrow \mathcal{F'}\cup\{(x,y,z)\} ,sumweight\leftarrow sumweight+c((x,y,z))$\;
+						}
+					}
+					
+					\Return{$\mathcal{F'}$}\;
+					
+				\end{algorithm}
+			\end{minipage}
+			\item $ X = Y = Z = \{1,2\} $, $ D = X\times Y\times Z $.
+			$$c((x,y,z))=
+			\begin{cases}
+			9 &(x,y,z) = (1,1,1)\\
+			1 &(x,y,z) = (2,2,2)\\
+			8 &\text{otherwise}
+			\end{cases}
+			$$
+			The result of Alg.\ref{Alg-2} is $ \mathcal{F'}=\{(1,1,1),(2,2,2)\} $ and the weight is 10, but one of the optimal solution is $ \mathcal{F}=\{(1,2,1),(2,1,2)\} $, weight$ = 16 $.
+			\item
+			\textbf{Proof}. Suppose $ D_x\in D $: $ \forall x_i,x_j\in X (i\neq j)$: $ x_i\neq x_j  $; \quad$ D_y\in D $: $ \forall y_i,y_j\in X (i\neq j)$: $ y_i\neq y_j$; \quad $ D_z\in D $: $ \forall z_i,z_j\in X (i\neq j)$: $ z_i\neq z_j$. \\ 
+			Define $ \mathcal{C}_1,\mathcal{C}_2 $ and $ \mathcal{C}_3 $ are the collection of $ D_x,D_y $ and $ D_z $ ; and define $ \mathcal{C} $ is the collection of independent subset of $ D $. So we have: $ \mathcal{C}=\bigcap_{i=1}^{3} \mathcal{C}_{i} $.\\
+			Now proof $ (D,\mathcal{C}_1),(D,\mathcal{C}_2) $ and $ (D,\mathcal{C}_3) $ are matroids. Since $ \mathcal{C}_1,\mathcal{C}_2 $ and $ \mathcal{C}_3 $ are equivalent, we only consider $ \mathcal{C}_1 $.\\
+			\textbf{Hereditary}: $ \forall B\subseteq D_x, \forall A \subset B$, since $ \forall x_i,x_j\in B(i\neq j): x_i\neq x_j $, we have the same property for $ A $. So $ A\in\mathcal{C}_x $.\\
+			\textbf{Exchange Property}: (by contradiction) $\forall A,B\in \mathcal{C}_1$, $ |A|<|B| $, suppose $ \forall (x,y,z)\in B\backslash A$, $ A\cup \{(x,y,z)\}\notin \mathcal{C}_1$, which equals $ \forall (x,y,z)\in B,\exists x_a \in A: x = x_a $. And since $ A $ and $ B $ are subsets of $ D_x $, their cardinality equals to the number of different $ x $. So we have $ |B|\leq|A| $, contradiction.\\
+			Therefore we can conclude that $ (D,\mathcal{C}_1),(D,\mathcal{C}_2) $ and $ (D,\mathcal{C}_3) $ are matroids.\\
+			According to Thm.\ref{Thm-Intersect}, we have  $\max\limits_{F \subseteq D} \frac{v(F)}{u(F)} \leq 3$. 
+		\end{enumerate}
+	\end{solution}
+
+
+	\item
+	\textbf{Crowdsourcing} is the process of obtaining needed services, ideas, or content by soliciting contributions from a large group of people, especially an online community. Suppose you want to form a team to complete a crowdsourcing task, and there are $n$ individuals to choose from. Each person $p_i$ can contribute $v_i$ ($v_i > 0$) to the team, but he/she can only work with up to $c_i$ other people. Now it is up to you to choose a certain group of people and maximize their total contributions ($\sum_i{v_i}$).
+	
+	\begin{enumerate}
+		\item Given $\text{OPT}(i, b, c)=$ maximum contributions when choosing from $\{p_1, p_2, \cdots, p_i\}$ with $b$ persons from $\{p_{i+1}, p_{i+2}, \cdots, p_n\}$ already on board and at most $c$ seats left before any of the existing team members gets uncomfortable. Describe the optimal substructure as we did in class and write a recurrence for $\text{OPT}(i, b, c)$.
+		\item Design an algorithm to form your team using dynamic programming, in the form of \emph{pseudo code}.
+        \item Analyze the time and space complexities of your design.
+	\end{enumerate}
+
+	\begin{solution}
+		\begin{enumerate}
+			\item \textbf{Optimal substructure}:\\
+			Case 1: OPT selects $ p_i $.
+			\begin{itemize}
+				\item collect contribution $ v_i $, 
+				\item calculate the minimal people that could be added,
+				\item must include OPT in $ \{p_1, p_2, \cdots, p_{i-1}\} $
+			\end{itemize}
+			Case 2: OPT does not select $ p_i $
+			\begin{itemize}
+				\item must include OPT in $ \{p_1, p_2, \cdots, p_{i-1}\} $
+			\end{itemize}
+			\textbf{Recurrence function}:
+			$$\text{OPT}(i, b, c)= 
+			\begin{cases}
+			0 &c=0\text{ or }i=0\\
+			\text{OPT}(i-1,b,c) &c_i<b\\
+			\max \{v_i+\text{OPT}(i-1,b+1,minc),\text{OPT}(i-1,b,c)\} &\text{otherwise}
+			\end{cases}
+			$$
+			in which $ minc=\min\{c-1,c_i-b\} $.
+			\item
+			\begin{minipage}[t]{0.89\textwidth}
+				\begin{algorithm}[H]
+					\KwIn{$n,c_i,v_i(1\leq i\leq n)$.}
+					\KwOut{maximized $\sum_i{v_i}$}
+					\BlankLine
+					\caption{Crowdsourcing}
+					\label{Alg-3}
+					
+					Initialize $ OPT[i,b,c] $ as 3-dimensional array$ [n,n,n] $\;
+					
+					$OPT[0,b,c]\leftarrow0,OPT[i,b,0]\leftarrow0 $\;
+					
+					\For{$ i=1 $ to $ n $}{
+						\For{$ b=n $ to $ c_i+1 $}{
+							\lFor{all $ c $}{$ OPT[i,b,c] \leftarrow OPT[i-1,b,c] $}
+						}
+						\For{$ b=c_i $ to $ 0 $}{
+							\For{all $ c\geq 1$}{
+								$ minc\leftarrow\min \{c-1,c_i\} $\;
+								$ OPT[i,b,c]\leftarrow \max\{v_i+OPT[i-1,b+1,minc],OPT[i-1,b,c]\} $
+							}
+						}
+					}
+					
+					\Return{$OPT[n,0,n]$}\;
+					
+				\end{algorithm}
+			\end{minipage}
+			\item Time complexity: Since all operations in For-loop are $ O(1) $, the time complexity of Alg.\ref{Alg-3} is $ O(n^3) $.\\
+			Space complexity:$  O(n^3) $
+		\end{enumerate}
+	\end{solution}
+
+\end{enumerate}
+
+\vspace{20pt}
+
+\textbf{Remark:} You need to include your .pdf and .tex files in your uploaded .rar or .zip file.
+
+%========================================================================
+\end{document}
