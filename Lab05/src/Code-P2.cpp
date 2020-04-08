@@ -3,7 +3,7 @@
 #include <queue>
 using namespace std;
 
-#define ONLY_COST
+//#define ONLY_COST
 //#define OUTPUT_HORIZONTAL
 
 const int MAXL = 100001;
@@ -163,7 +163,7 @@ void _print(){
         if(dst.first == begin.first){
             x+="-",y+=DNA_y[dst.second];
         } else if (dst.second == begin.second){
-            x+=DNA_x[dst.first],y+=DNA_y[dst.second];
+            x+=DNA_x[dst.first],y+='-';
         }else {
             y+=DNA_y[dst.second],x+=DNA_x[dst.first];
         }

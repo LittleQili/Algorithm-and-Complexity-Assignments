@@ -8,7 +8,7 @@ int thick[MAXIN+1];
 int width[MAXIN+1];
 
 int main(){
-    //fast read and output
+    //fast read and write
     ios::sync_with_stdio(false);
     cin.tie(0);
     cout.tie(0);
