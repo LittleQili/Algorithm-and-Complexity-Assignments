@@ -1,22 +1,23 @@
 #include <iostream>
-#include <string>
+#include <stdio.h>
 #include <queue>
+#include <string>
 using namespace std;
 
 //#define ONLY_COST
 //#define OUTPUT_HORIZONTAL
 
 const int MAXL = 100001;
-string DNA_x;
-string DNA_y;
-int lenx,leny;
+char DNA_x[MAXL+5];
+char DNA_y[MAXL+5];
+int lenx = 1,leny = 1;
 int line1[MAXL+1],line2[MAXL+1],linemid[MAXL+1];
 #ifndef ONLY_COST
 queue<pair<int,int>> seq;
 #endif
 int cost;
 
-int singleCost(char l,char r){
+inline int singleCost(char l,char r){
     if(l == r) return 0;
     if(l == '-'){
         if(r == 'A'||r == 'G') return 1;
@@ -29,10 +30,23 @@ int singleCost(char l,char r){
         if(r == 'G')return 9;
         if(r == 'C')return 1;
     }else if(l == 'G'&&r == 'C')return 1;
-    return singleCost(r,l);
+
+    if(r == '-'){
+        if(l == 'A'||l == 'G') return 1;
+        if(l == 'T') return 2;
+        if(l == 'C') return 3;
+    }else if(r == 'A'){
+        if(l == 'T'||l == 'C') return 1;
+        if(l == 'G')return 5;
+    }else if(r == 'T'){
+        if(l == 'G')return 9;
+        if(l == 'C')return 1;
+    }else if(r == 'G'&&l == 'C')return 1;
+    cerr<<"Wrong DNA sequence!";
+    exit(1);
 }
 
-int _min(int a,int b){
+inline int _min(int a,int b){
     if(a < b)return a;
     else return b;
 }
@@ -163,7 +177,7 @@ void _print(){
         if(dst.first == begin.first){
             x+="-",y+=DNA_y[dst.second];
         } else if (dst.second == begin.second){
-            x+=DNA_x[dst.first],y+='-';
+            x+=DNA_x[dst.first],y+=DNA_y[dst.second];
         }else {
             y+=DNA_y[dst.second],x+=DNA_x[dst.first];
         }
@@ -188,20 +202,81 @@ void _print(){
 }
 #endif
 
+void getDNA(){
+    cout << "Input the data by File or Command line? Enter f(file)/c(Command Line): ";
+    char input;
+    cin.get(input);
+    cin.clear();
+    cin.sync();
+    if(input == 'f'){
+        cout << "Please enter two file names:\n";
+        string name1,name2;
+        cin >> name1 >> name2;
+        FILE *fp;
+        if((fp = fopen(name1.c_str(),"r")) == NULL){
+            cerr << "Fail to read " << name1;
+            exit (1) ;
+        }
+        fseek (fp , 0 , SEEK_END);
+        lenx = ftell(fp) - 1;
+        fseek (fp , 0 , SEEK_SET);
+        fread(DNA_x+1, sizeof(char),lenx,fp);
+        int tmp = fclose(fp);
+        if(tmp == EOF){
+            cerr << "Fail to close " << name1;
+            exit (1) ;
+        }
+
+        if((fp = fopen(name2.c_str(),"r")) == NULL){
+            cerr << "Fail to read " << name2;
+            exit (1) ;
+        }
+        fseek (fp , 0 , SEEK_END);
+        leny = ftell(fp) - 1;
+        fseek (fp , 0 , SEEK_SET);
+        fread(DNA_y+1, sizeof(char),leny,fp);
+        tmp = fclose(fp);
+        if(tmp == EOF){
+            cerr << "Fail to close " << name2;
+            exit (1) ;
+        }
+    }else if(input == 'c'){
+        cout << "Please enter two DNA sequences.\n";
+        char tmp;
+        cin.get(tmp);
+        while (tmp != ' '&&tmp != '\n'){
+            DNA_x[lenx] = tmp;
+            ++lenx;
+            cin.get(tmp);
+        }
+        --lenx;
+        while(tmp == ' '||tmp == '\n')cin.get(tmp);
+        while(tmp != ' '&&tmp != '\n'){
+            DNA_y[leny] = tmp;
+            ++leny;
+            cin.get(tmp);
+        }
+        --leny;
+//        cout << lenx << ' ' << leny << '\n';
+        cin.clear();
+        cin.sync();
+    }else{
+        cerr << "Wrong Input!";
+        exit(1);
+    }
+}
+
 int main(){
-    cin>>DNA_x>>DNA_y;
-    lenx = DNA_x.length(),leny = DNA_y.length();
-    DNA_x.insert(0,"#");
-    DNA_y.insert(0,"#");
+    getDNA();
 #ifndef ONLY_COST
     seq.push(pair<int,int>(0,0));
 #endif
     similarity(0,0,lenx,leny);
 #ifndef ONLY_COST
     seq.push(pair<int,int>(lenx,leny));
-#endif
-    cout << cost << '\n';
-#ifndef ONLY_COST
+    cout << "The paired sequence is:\n";
     _print();
 #endif
+    cout << "Edit distance = "<<cost;
+    return 0;
 }
