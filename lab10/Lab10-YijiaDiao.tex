@@ -1,0 +1,401 @@
+\documentclass[12pt,a4paper]{article}
+%\usepackage{ctex}
+\usepackage{amsmath,amscd,amsbsy,amssymb,latexsym,url,bm,amsthm}
+\usepackage{epsfig,graphicx,subfigure}
+\usepackage{enumitem,balance}
+\usepackage{wrapfig}
+\usepackage{mathrsfs,euscript}
+\usepackage[usenames]{xcolor}
+\usepackage{hyperref}
+\usepackage[vlined,ruled,linesnumbered]{algorithm2e}
+\usepackage{float}
+\usepackage{multirow}
+
+\hypersetup{colorlinks=true,linkcolor=blue}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{exercise}{Exercise}
+\newtheorem*{solution}{Solution}
+\newtheorem{definition}{Definition}
+\theoremstyle{definition}
+
+
+
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+
+\newcommand{\postscript}[2]
+ {\setlength{\epsfxsize}{#2\hsize}
+  \centerline{\epsfbox{#1}}}
+
+\renewcommand{\baselinestretch}{1.0}
+
+\setlength{\oddsidemargin}{-0.365in}
+\setlength{\evensidemargin}{-0.365in}
+\setlength{\topmargin}{-0.3in}
+\setlength{\headheight}{0in}
+\setlength{\headsep}{0in}
+\setlength{\textheight}{10.1in}
+\setlength{\textwidth}{7in}
+\makeatletter \renewenvironment{proof}[1][Proof] {\par\pushQED{\qed}\normalfont\topsep6\p@\@plus6\p@\relax\trivlist\item[\hskip\labelsep\bfseries#1\@addpunct{.}]\ignorespaces}{\popQED\endtrivlist\@endpefalse} \makeatother
+\makeatletter
+\renewenvironment{solution}[1][Solution] {\par\pushQED{\qed}\normalfont\topsep6\p@\@plus6\p@\relax\trivlist\item[\hskip\labelsep\bfseries#1\@addpunct{.}]\ignorespaces}{\popQED\endtrivlist\@endpefalse} \makeatother
+
+\begin{document}
+\noindent
+
+%========================================================================
+\noindent\framebox[\linewidth]{\shortstack[c]{
+\Large{\textbf{Lab10-Turing Machine}}\vspace{1mm}\\
+Algorithm and Complexity (CS214), Xiaofeng Gao, Spring 2020.}}
+\begin{center}
+\footnotesize{\color{red}$*$ If there is any problem, please contact TA Yiming Liu. }
+
+\footnotesize{\color{blue}$*$ Name:Yijia Diao  \quad Student ID:518030910146 \quad Email: diao\_yijia@sjtu.edu.cn}
+\end{center}
+
+\begin{enumerate}
+
+\item
+Design a one-tape TM $M$ that computes the function $f(x, y) = x \mod y$, where $x$ and $y$ are positive integers ($x > y$). The alphabet is $\{1, 0, \Box, \triangleright, \triangleleft\}$, and the inputs are $x$ 1's, $\Box$ and $y$ 1's. Below is the initial configuration for input $x=7$ and $y=3$. The result $z=f(x, y)$ should also be represented in the form of $z$ 1's on the tape with the pattern of $\triangleright 111 \cdots 111 \triangleleft$.
+\begin{center}
+	\begin{tabular}{ll|c|c|c|c|c|c|c|c|c|c|c|c|c|c}
+		& \multicolumn{14}{c}{Initial Configuration}\\[5pt]
+		\cline{2-16}
+		& & $\triangleright$ &  1  & 1 & 1 & 1 & 1 & 1 & 1 & $\Box$ & 1 & 1 & 1 & $ \triangleleft$ & \\
+		\cline{2-16}
+		\multicolumn{2}{c}{} & \multicolumn{1}{c}{$\uparrow$} & \multicolumn{11}{c}{}\\[-4px]
+		\multicolumn{2}{c}{} & \multicolumn{1}{c}{$q_S$} & \multicolumn{11}{c}{}	
+	\end{tabular}
+\end{center}
+
+\begin{enumerate}
+	\item
+	Please describe your design and then write the specifications of $M$ in the form like $\langle q_S, \triangleright \rangle \rightarrow \langle q_1, \triangleright,  R\rangle$. Explain the transition functions in detail.
+	
+	\item
+	Please draw the state transition diagram.
+	
+	\item
+	Show briefly and clearly the whole process from initial to final configurations for input $x = 7$ and $y = 3$. You may start like this:
+	$$(q_s,\underline{\triangleright}  1  1  1  1  1  1  1  \Box 1  1  1   \triangleleft)
+	\vdash (q_1,\triangleright  \underline{1}  1  1  1  1  1  1  \Box 1  1  1   \triangleleft)
+	\vdash^* (q_1,\triangleright  1  1  1  1  1  1  1  \underline{\Box} 1  1  1   \triangleleft)
+	\vdash (q_2,\triangleright  1  1  1  1  1  1  1  \Box \underline{1}  1  1   \triangleleft)$$
+	
+	\par{\color{blue}(Note that for simplicity, we write $(q_1,\triangleright  \underline{1}  1  1  1  1  1  1  \Box 1  1  1   \triangleleft)\vdash^* (q_1,\triangleright  1  1  1  1  1  1  1  \underline{\Box} 1  1  1   \triangleleft)$ if the corresponding transaction repeats on multiple inputs with the same state.)}
+	
+\end{enumerate}
+
+\begin{solution}
+	\begin{enumerate}
+		\item The main idea is: remove $ x $ along with modifying $ y $ (change 1 into 0); if $ y $ is cleared, recover $ y $ and then continue the loop. When $ x $ is cleared, keep the $ 0 $ in $ y $ and change them to 1, and this is the proper result.
+		
+		\hspace{2mm}
+		\begin{minipage}{0.45\textwidth}
+			\begin{center}
+				\leftline{Beginning:}
+				
+				$\langle q_S,\triangleright\rangle\rightarrow\langle q_1,\Box,R\rangle$
+				
+				\leftline{$x-1$:}
+				
+				$\langle q_1,1\rangle\rightarrow\langle q_2,\triangleright,R\rangle$
+				
+				\leftline{Move to $y$:}
+				
+				$\langle q_2,1\rangle\rightarrow\langle q_2,1,R\rangle$
+				
+				$\langle q_2,\Box\rangle\rightarrow\langle q_3,\Box,R\rangle$
+				
+				\leftline{Modify $y$:}
+				
+				$\langle q_3,0\rangle\rightarrow\langle q_3,0,R\rangle$
+				
+				$\langle q_3,1\rangle\rightarrow\langle q_4,0,R\rangle$
+				
+				\leftline{Recovering $y$:}
+				$\langle q_4,\triangleleft\rangle\rightarrow\langle q_5,\triangleleft,R\rangle$
+				
+				$\langle q_5,0\rangle\rightarrow\langle q_5,1,R\rangle$
+				
+				$\langle q_5,\Box\rangle\rightarrow\langle q_4,\Box,L\rangle$
+			\end{center}
+		\end{minipage}
+		\begin{minipage}{0.45\textwidth}
+			\begin{center}
+				\leftline{Move to the beginning of $ x $:}
+				
+				$\langle q_4,1\rangle\rightarrow\langle q_4,1,L\rangle$
+				
+				$\langle q_4,0\rangle\rightarrow\langle q_4,0,L\rangle$
+				
+				$\langle q_4,\Box\rangle\rightarrow\langle q_4,\Box,L\rangle$
+				
+				$\langle q_4,\triangleright\rangle\rightarrow\langle q_1,\Box,R\rangle$
+				
+				\leftline{If $ x $ is cleared:}
+				
+				$\langle q_1,\Box\rangle\rightarrow\langle q_6,\triangleright,R\rangle$
+				
+				\leftline{Then get the result:}
+				
+				$\langle q_6,0\rangle\rightarrow\langle q_6,1,R\rangle$
+				
+				$\langle q_6,1\rangle\rightarrow\langle q_H,\triangleleft,S\rangle$
+				
+				$\langle q_6,\triangleleft\rangle\rightarrow\langle q_H,\triangleleft,S\rangle$
+			\end{center}
+		\end{minipage}
+		\item 
+		The Transition diagram is:
+		
+		\begin{figure}[H]
+			\centering
+			\includegraphics[width=0.8\textwidth]{Fig-Transition.pdf}
+			\caption{Transition Diagram}
+			\label{Fig1}
+		\end{figure}
+		\item The whole process is:
+		
+		\begin{minipage}{0.27\textwidth}
+			\begin{center}
+				$(q_s,\underline{\triangleright}  1  1  1  1  1  1  1  \Box 1  1  1   \triangleleft)$
+				
+				\leftline{$ x\rightarrow6, y'\text{s first } 1\rightarrow0 $:}
+				
+				$\vdash (q_1,\Box \underline{1}  1  1  1  1  1  1  \Box 1  1  1   \triangleleft)$
+				
+				$\vdash (q_2,\Box \triangleright \underline{1}  1  1  1  1  1  \Box 1  1  1   \triangleleft)$
+				
+				$\vdash^* (q_2,\Box\triangleright  1  1  1  1  1  1  \underline{\Box} 1  1  1   \triangleleft)$
+				
+				$\vdash (q_3,\Box\triangleright  1  1  1  1  1  1  \Box \underline{1}  1  1   \triangleleft)$
+				
+				$\vdash (q_4,\Box\triangleright  1  1  1  1  1  1  \Box 0 \underline{1} 1   \triangleleft)$
+				
+				$\vdash^* (q_4,\Box \underline{\triangleright}  1  1  1  1  1  1  \Box 0  1  1   \triangleleft)$
+				
+				\leftline{$ x\rightarrow5, y'\text{s second } 1\rightarrow0 $:}
+				
+				$\vdash (q_1,\Box \Box \underline{1}  1  1  1  1  1  \Box 0  1  1   \triangleleft)$
+				
+				$\vdash (q_2,\Box \Box \triangleright\underline{1}  1  1  1  1  \Box 0  1  1   \triangleleft)$
+				
+				$\vdash^* (q_2,\Box \Box \triangleright1  1  1  1  1 \underline{\Box} 0  1  1   \triangleleft)$
+				
+				$\vdash (q_3,\Box \Box \triangleright1  1  1  1  1 \Box \underline{0}  1  1   \triangleleft)$
+				
+				$\vdash (q_3,\Box \Box \triangleright1  1  1  1  1 \Box 0 \underline{1} 1   \triangleleft)$
+				
+				$\vdash (q_4,\Box \Box \triangleright1  1  1  1  1 \Box 0 0 \underline{1}   \triangleleft)$
+				
+				$\vdash^* (q_4,\Box \Box \underline{\triangleright}1  1  1  1  1 \Box 0 0 1 \triangleleft)$
+				
+				\leftline{$ x\rightarrow4, y'\text{s third } 1\rightarrow0 $:}
+				
+				$\vdash (q_1,\Box \Box \Box \underline{1}  1  1  1  1  \Box 0  0  1   \triangleleft)$
+				
+				$\vdash (q_2,\Box \Box \Box \triangleright \underline{1} 1  1  1  \Box 0  0  1   \triangleleft)$
+				
+				$\vdash^* (q_2,\Box \Box \Box\triangleright  1  1  1  1 \underline{\Box} 0  0  1   \triangleleft)$
+				
+				$\vdash (q_3,\Box \Box \Box\triangleright  1  1  1  1 \Box \underline{0} 0  1   \triangleleft)$
+				
+				$\vdash^* (q_3,\Box \Box \Box\triangleright  1  1  1  1 \Box 0 0\underline{1}  \triangleleft)$
+				
+				$\vdash (q_4,\Box \Box \Box\triangleright  1  1  1  1 \Box 0 0 0\underline{\triangleleft})$
+			\end{center}
+		\end{minipage}
+		\begin{minipage}{0.27\textwidth}
+			\begin{center}
+				\leftline{recover $ y $:}
+				
+				$\vdash (q_5,\Box \Box \Box\triangleright  1  1  1  1 \Box 0 0 \underline{0}\triangleleft)$
+				
+				$\vdash^* (q_5,\Box \Box \Box\triangleright  1  1  1  1 \underline{\Box} 1 1 1\triangleleft)$
+				
+				$\vdash (q_4,\Box \Box \Box\triangleright  1  1  1  \underline{1} \Box 1 1 1\triangleleft)$
+				
+				$\vdash^* (q_4,\Box \Box \Box\underline{\triangleright}  1  1  1  1 \Box 1 1 1\triangleleft)$
+				
+				\leftline{$ x\rightarrow3, y'\text{s first } 1\rightarrow0 $:}
+				
+				$\vdash (q_1,\Box \Box \Box\Box\underline{1} 1  1  1 \Box 1 1 1\triangleleft)$
+				
+				$\vdash (q_2,\Box \Box \Box\Box\triangleright\underline{1} 1  1 \Box 1 1 1\triangleleft)$
+				
+				$\vdash^* (q_2,\Box \Box \Box\Box\triangleright1 1  1 \underline{\Box} 1 1 1\triangleleft)$
+				
+				$\vdash (q_3,\Box \Box \Box\Box\triangleright1 1  1 \Box \underline{1} 1 1\triangleleft)$
+				
+				$\vdash (q_4,\Box \Box \Box\Box\triangleright1 1  1 \Box0 \underline{1} 1\triangleleft)$
+				
+				$\vdash^* (q_4,\Box \Box \Box\Box\underline{\triangleright}1 1  1 \Box0 1 1\triangleleft)$
+				
+				\leftline{$ x\rightarrow2, y'\text{s second } 1\rightarrow0 $:}
+				
+				$\vdash (q_1,\Box \Box \Box\Box\Box\underline{1}  1  1 \Box 0 1 1\triangleleft)$
+				
+				$\vdash (q_2,\Box \Box \Box\Box\Box\triangleright\underline{1} 1 \Box0 1 1\triangleleft)$
+				
+				$\vdash^* (q_2,\Box \Box \Box\Box\Box\triangleright1  1 \underline{\Box} 0 1 1\triangleleft)$
+				
+				$\vdash (q_3,\Box \Box \Box\Box\Box\triangleright1  1 \Box \underline{0} 1 1\triangleleft)$
+				
+				$\vdash (q_3,\Box \Box \Box\Box\Box\triangleright1  1 \Box0 \underline1 1\triangleleft)$
+				
+				$\vdash (q_4,\Box \Box \Box\Box\Box\triangleright1  1 \Box0 0\underline1\triangleleft)$
+				
+				$\vdash^* (q_4,\Box \Box \Box\Box\Box\underline{\triangleright}1  1 \Box00 1\triangleleft)$
+				
+				\leftline{$ x\rightarrow1, y'\text{s third } 1\rightarrow0 $:}
+				
+				$\vdash (q_1,\Box \Box \Box\Box\Box\Box\underline{1} 1 \Box 0 0 1\triangleleft)$
+			\end{center}
+		\end{minipage}
+		\begin{minipage}{0.3\textwidth}
+			\begin{center}
+				$\vdash (q_2,\Box \Box \Box\Box\Box\Box\triangleright\underline{1} \Box 0 0 1\triangleleft)$
+				
+				$\vdash (q_2,\Box \Box \Box\Box\Box\Box\triangleright1\underline{\Box}0 0 1\triangleleft)$
+				
+				$\vdash (q_3,\Box \Box \Box\Box\Box\Box\triangleright1 \Box \underline{0} 0  1   \triangleleft)$
+				
+				$\vdash^* (q_3,\Box \Box \Box\Box\Box\Box\triangleright1 \Box 0 0\underline{1}  \triangleleft)$
+				
+				$\vdash (q_4,\Box \Box \Box\Box\Box\Box\triangleright1 \Box 0 0 0\underline{\triangleleft})$
+				
+				\leftline{recover $ y $:}
+				
+				$\vdash (q_5,\Box \Box \Box\Box\Box\Box\triangleright1 \Box 0 0 \underline{0}\triangleleft)$
+				
+				$\vdash^* (q_5,\Box \Box \Box\Box\Box\Box\triangleright1 \underline{\Box} 1 1 1\triangleleft)$
+				
+				$\vdash (q_4,\Box \Box \Box\Box\Box\Box\triangleright\underline{1} \Box 1 1 1\triangleleft)$
+				
+				$\vdash (q_4,\Box \Box \Box\Box\Box\Box\underline{\triangleright}  1 \Box111\triangleleft)$
+				
+				\leftline{$ x\rightarrow0, y'\text{s first } 1\rightarrow0 $:}
+				
+				$\vdash (q_1,\Box \Box \Box\Box\Box\Box\Box\underline{1}\Box111\triangleleft)$
+				
+				$\vdash (q_2,\Box \Box \Box\Box\Box\Box\Box\triangleright\underline{\Box}111\triangleleft)$
+				
+				$\vdash (q_3,\Box \Box \Box\Box\Box\Box\Box\triangleright\Box\underline{1}11\triangleleft)$
+				
+				$\vdash (q_4,\Box \Box \Box\Box\Box\Box\Box\triangleright\Box0\underline{1}1\triangleleft)$
+				
+				$\vdash^* (q_4,\Box \Box \Box\Box\Box\Box\Box\underline{\triangleright}\Box01 1\triangleleft)$
+				
+				\leftline{change $ 0\rightarrow1 $ in $ y $, finish:}
+				
+				$\vdash (q_1\Box \Box \Box\Box\Box\Box\Box\Box\underline{\Box}01 1\triangleleft)$
+				
+				$\vdash (q_6\Box \Box \Box\Box\Box\Box\Box\Box\triangleright\underline{0}1 1\triangleleft)$
+				
+				$\vdash (q_6\Box \Box \Box\Box\Box\Box\Box\Box\triangleright1\underline{1} 1\triangleleft)$
+				
+				$\vdash (q_H\Box \Box \Box\Box\Box\Box\Box\Box\triangleright1\underline{\triangleleft} 1\triangleleft)$
+			\end{center}
+		\end{minipage}
+	\end{enumerate}
+\end{solution}
+
+\item Assume there's a Turing Machine $M$ using alphabet $\Gamma :\{ \triangleright, \Box, a, b, \cdots, z\}$. We can simulate $M$ by a Turing Machine $\tilde{M}$ using alphabet $\tilde{\Gamma }:\{ \triangleright, \Box, 0, 1\}$. Please transform the instruction $\langle q, i \rangle \rightarrow \langle q',j, R\rangle$ in $M$ into its corresponding form in $\tilde{M}$.
+
+\begin{solution}
+	Since the alphabet has 26 variables, we use 5-bit 0-1 string to encode the alphabet. So $ i = 01001, j = 01010 $ in this problem. Then we decide the corresponding instructions in $ \tilde{M} $ in the following steps:
+	
+	\begin{minipage}{0.45\textwidth}
+		\begin{center}
+			\leftline{1. In state $ q $, decode the alphabet:}
+			
+			$\langle q,0\rangle\rightarrow\langle q_{0},0,R\rangle$
+			
+			$\langle q_{0},1\rangle\rightarrow\langle q_{01},1,R\rangle$
+			
+			$\langle q_{01},0\rangle\rightarrow\langle q_{010},0,R\rangle$
+			
+			$\langle q_{010},0\rangle\rightarrow\langle q_{0100},0,R\rangle$
+			
+			$\langle q_{0100},1\rangle\rightarrow\langle q_{ib},1,L\rangle$
+			
+			\leftline{2. Go back to the beginning:}
+			
+			$\langle q_{ib},0\rangle\rightarrow\langle q_{ib_{3}},0,L\rangle$
+		\end{center}
+	\end{minipage}
+	\begin{minipage}{0.45\textwidth}
+		\begin{center}
+			$\langle q_{ib_{3}},0\rangle\rightarrow\langle q_{ib_{2}},0,L\rangle$
+			
+			$\langle q_{ib_{2}},1\rangle\rightarrow\langle q'_{i},1,L\rangle$
+			
+			\leftline{3. Change $ i $ to $ j $:}
+			
+			$\langle q'_{i},0\rangle\rightarrow\langle q'_{i_{2}},0,R\rangle$
+			
+			$\langle q'_{i_{2}},1\rangle\rightarrow\langle q'_{i_{3}},1,R\rangle$
+			
+			$\langle q'_{i_{3}},0\rangle\rightarrow\langle q'_{i_{4}},0,R\rangle$
+			
+			$\langle q'_{i_{4}},0\rangle\rightarrow\langle q'_{i_{5}},1,R\rangle$
+			
+			$\langle q'_{i_{5}},1\rangle\rightarrow\langle q',0,R\rangle$
+		\end{center}
+	\end{minipage}
+	
+	If we change $ i $ to other input, $ q $ to other state (which equals to change $ j $ to other output), the basic steps are the same, just to use different middle-states and change the 0-1 string to different output.
+\end{solution}
+
+\item \textbf{Wireless Data Broadcast System.}
+In a Wireless Data Broadcast System (WDBS), data items are repeatedly broadcasted in cycle on different channels. Denote $D = \{d_1, d_2,\cdots, d_k\}$ as data items, each $d_i$ with length $l_i$ (as time units), and $\mathbf{C}=\{C_1, C_2, \cdots, C_n\}$ as broadcasting channels. Fig.~\ref{Fig-Broadcast} illustrates a WDBS with 25 data items and 4 channels. Once a channel finishes broadcasting current cycle, it will repeat these data again as a new cycle. E.g., a possible broadcasting sequence of $C_1$ could be \{$d_6$, $d_{12}$, $d_1$, $d_{18}$, $d_7$, $d_6$, $d_{12}$, $d_1$, $d_{18}$, $d_7$, $\cdots$\}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale=1]{Fig-Broadcast.pdf}
+	\caption{An Example Scenario of Wireless Data Broadcast System.} \label{Fig-Broadcast}
+\end{figure}
+
+If a mobile client requires a subset of data items $D_q \subseteq D$ from this WDBS, he/she must access onto one channel, wait for the appearance of one required item, and switch to another channel if necessary. Each ``switch'' requires one time slot. For example, Lucien wants to download $\{d_1, d_3, d_5\}$, as shown in Fig.~\ref{Fig-Access}. He firstly accesses onto $C_1$ at time slot 1, then download $d_1$, $d_3$ respectively during time slots 2 to 5, and then switch to $C_3$ at time slot 6 (note that he cannot download $d_5$ from $C_2$ because of the switch constraint), and download $d_5$ during time slots 7 to 8. We define \emph{access latency} as the period when a client starts downloading, till the time he/she finishes. As a result, the overall access latency for Lucien is 7 in this example.
+
+\begin{figure}[!htbp]
+	\centering
+	\includegraphics[scale= 0.5]{Fig-Access.pdf}
+	\caption{An Example Scenario of Query of a Client.} \label{Fig-Access}
+\end{figure}
+
+Each operation (download/wait/switch) needs energy consumption. To conserve energy, a client hopes to use minimum amount of energy to download all required items in $D_q$, which means that he/she waits to minimize both access latency and switch numbers. Unfortunately, these two objectives conflict with each other naturally. Fig.~\ref{Fig-Conflict} exhibits such a scenario. To download $D_q=\{d_1, d_2, d_3, d_4\}$, if we start from $C_2$, in Option 1 we can switch to $C_1$ for $d_1$ immediately after downloading $d_3$, return back to $C_2$ for $d_4$, and to $C_1$ again for $d_2$. Such option costs 3 switches and 7 access latency. While in Option 2, we stay at $C_2$ lazily for $d_3$ and $d_4$, and then switch to $C_1$ for $d_2$ and $d_1$. Such option costs 1 switches and 12 access latency.
+
+
+\begin{figure}[!htbp]
+	\centering
+	\includegraphics[scale= 0.5]{Fig-Conflict.pdf}
+	\caption{Confliction between Access Latency and Switch Number.} \label{Fig-Conflict}
+\end{figure}
+
+Once we want to minimize two conflictive objectives simultaneously, we have three possible ways (similar as Segmented Least Squares told in Dynamic Programming Lecture). Now it is your turn to complete the formulation of this optimization, we name it as Minimum Constraint Data Retrieval Problem (MCDR), with the following sub-questions.
+\begin{enumerate}
+	\item If we add an additional switch parameter $h$, please define the MCDR (Version 1) completely as a search problem.
+	\item If we add an additional latency parameter $t$, please define the MCDR (Version 2) completely as a search problem.
+	\item If we set dimensional parameters $\alpha$ to switch number, and $\beta$ to access latency, we can combine two objectives together linearly as a new concept ``cost''. Please define the Minimum Cost Data Retrieval Problem (MCDR, Version 3) correspondingly.
+	\item Please give the decision versions of sub-questions (a), (b) and (c).
+\end{enumerate}
+\begin{solution}
+	Assume that the user wants to download $ D_{k} = \{d_{i_{1}}, d_{i_{2}},\cdots,d_{i_{k}}\} (k\ge1)$.
+	\begin{enumerate}
+		\item MCDR (Version 1): Find the download strategy that minimize switch times $ h $.
+		\item MCDR (Version 2): Find the download strategy that minimize access latency $ t $.
+		\item MCDR (Version 3): Find the download strategy that minimize cost $ \alpha h+\beta t $.
+		\item MCDR (Version 1): Does there exist a download strategy that minimize switch times $ h $?\\
+		 MCDR (Version 2): Does there exist a download strategy that minimize access latency $ t $?\\
+		 MCDR (Version 3): Does there exist a download strategy that minimize cost $ \alpha h+\beta t $?
+	\end{enumerate}
+\end{solution}
+\end{enumerate}
+
+%========================================================================
+\end{document}
